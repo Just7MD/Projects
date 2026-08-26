@@ -1,3 +1,4 @@
+# basic web fuzzer
 import requests as rq
 import argparse as ap
 from string import ascii_letters, punctuation
