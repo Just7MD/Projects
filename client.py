@@ -20,9 +20,8 @@ def recv():
 
 def send():
     while True:
-        data = input()
+        data = input("you: ")
         server.sendto(data.encode(), (target, target_port))
-        print(f"you: {data}")
 
 r = Thread(target=recv, daemon=True)
 s = Thread(target=send, daemon=True)
