@@ -12,8 +12,8 @@ parser.add_argument("-m", "--method")
 parser.add_argument("-H", "--headers")
 parser.add_argument("-d", "--data")
 parser.add_argument("-b", "--blacklist")
-args = parser.parse_args()
 
+args = parser.parse_args()
 
 def parse_headers(raw):
     headers = {}
