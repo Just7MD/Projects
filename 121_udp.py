@@ -10,9 +10,7 @@ target_port = 4444 # target port, change if needed
 server = sk.socket(sk.AF_INET, sk.SOCK_DGRAM)
 
 def recv():
-    server = sk.socket(sk.AF_INET, sk.SOCK_DGRAM)
-
-    server.bind((ip, port))
+    peer.bind((ip, port))
 
     while True:
         data, addr = server.recvfrom(1024)
@@ -21,8 +19,8 @@ def recv():
 def send():
     while True:
         data = input()
-        server.sendto(data.encode(), (target, target_port))
-        print("you: {data}")
+        peer.sendto(data.encode(), (target, target_port))
+        print(f"you: {data}")
 
 r = Thread(target=recv, daemon=True)
 s = Thread(target=send, daemon=True)
