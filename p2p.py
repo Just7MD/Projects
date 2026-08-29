@@ -2,10 +2,10 @@ import socket as sk
 from threading import Thread
 
 ip = "0.0.0.0"
-port = 4444 # listening port, change
+port = 4444 # listening port, change if needed
 
 target = "192.168.1.10" # target ip, change
-target_port = 4444 # target port, change
+target_port = 4444 # target port, change if needed
 
 server = sk.socket(sk.AF_INET, sk.SOCK_DGRAM)
 
