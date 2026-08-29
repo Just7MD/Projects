@@ -30,3 +30,4 @@ try:
 except FileNotFoundError:
     print("could not open the specified wordlist")
     exit()
+    
