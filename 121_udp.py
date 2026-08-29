@@ -7,7 +7,7 @@ port = 4444 # listening port, change if needed
 target = "192.168.1.10" # target ip, change
 target_port = 4444 # target port, change if needed
 
-server = sk.socket(sk.AF_INET, sk.SOCK_DGRAM)
+peer = sk.socket(sk.AF_INET, sk.SOCK_DGRAM)
 
 def recv():
     peer.bind((ip, port))
@@ -30,4 +30,4 @@ s.start()
 r.join()
 s.join()
 
-server.close()
+peer.close()
