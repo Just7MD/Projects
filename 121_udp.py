@@ -13,7 +13,7 @@ def recv():
     peer.bind((ip, port))
 
     while True:
-        data, addr = server.recvfrom(1024)
+        data, addr = peer.recvfrom(1024)
         print(f"received: {data.decode()}")
 
 def send():
