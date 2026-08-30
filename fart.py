@@ -30,7 +30,7 @@ headers = args.headers
 data = args.data
 
 if url is None or wordlist is None:
-    print("url or wordlist parameter is missing\n")
+    print("url or/and wordlist parameter is missing\n")
     parser.print_help()
     exit()
 
