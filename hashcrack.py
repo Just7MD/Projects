@@ -9,14 +9,14 @@ parser.add_argument("-w", "--wordlist")
 parser.add_argument("-f", "--format")
 args = parser.parse_args()
 
-hash = args.hash.strip()
-wordlist = args.wordlist
-format = args.format.strip()
-
 if not hash or not wordlist or not format:
     print("hash, wordlist or format parameter is missing\n")
     parser.print_help()
     exit()
+
+hash = args.hash.strip()
+wordlist = args.wordlist
+format = args.format.strip()
 
 try:
     with open(wordlist, "r") as wl:
