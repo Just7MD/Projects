@@ -1,3 +1,4 @@
+# basic lan 121 udp messaging
 import socket as sk
 from threading import Thread
 
