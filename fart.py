@@ -4,6 +4,7 @@ import argparse as ap
 from string import ascii_letters, punctuation
 from urllib.parse import parse_qs
 from sys import exit
+from time import sleep
 
 parser = ap.ArgumentParser("basic web fuzzer")
 parser.add_argument("-u", "--url")
@@ -12,8 +13,21 @@ parser.add_argument("-m", "--method")
 parser.add_argument("-H", "--headers")
 parser.add_argument("-d", "--data")
 parser.add_argument("-b", "--blacklist")
+parser.add_argument("-W", "--whitelist")
 
 args = parser.parse_args()
+
+url = args.url
+wordlist = args.wordlist
+method = args.method
+headers = args.headers
+data = args.data
+blacklist = args.blacklist
+whitelist = args.whitelist
+
+if blacklist and whitelist:
+    print("can only specify black or whitelist")
+    exit()
 
 def parse_headers(raw):
     headers = {}
@@ -22,12 +36,6 @@ def parse_headers(raw):
             key, value = pair.split(":", 1)
             headers[key.strip()] = value.strip()
     return headers
-
-url = args.url
-wordlist = args.wordlist
-method = args.method
-headers = args.headers
-data = args.data
 
 if url is None or wordlist is None:
     print("url or/and wordlist parameter is missing\n")
@@ -43,41 +51,80 @@ if method and method not in ["GET", "POST"]:
 get = True if not method or method == "GET" else False
 
 try:
-    with open(wordlist, "r") as wls:
+    with open(wordlist, "rb") as wls:
         wl = [word.strip() for word in wls]
 except Exception:
-    print("could not open the specified wordlist")
+    print(f"could not open the specified wordlist properly")
     exit()
 
 do = [True if arg and "FART" in arg else False for arg in [url, headers, data]]
 
-for word in wl:
-    t_url = url.replace("FART", word) if do[0] else url
-    t_headers_raw = headers.replace("FART", word) if do[1] else headers
-    t_data_raw = data.replace("FART", word) if do[2] else data
-
-    if t_headers_raw:
-        t_headers = parse_headers(t_headers_raw)
-    else:
-        t_headers = {}
-
-    if t_data_raw:
-        t_data = {
-            key: values[0]
-            for key, values in parse_qs(t_data_raw).items()
-        }
-    else:
-        t_data = {}
-
-    try:
-        if get:
-            req = rq.get(t_url, headers=t_headers, data=t_data, timeout=10)
+if blacklist:
+    print(f"blacklisted status codes: {blacklist[::]}\n")
+    print("initalizing web fuzzer...")
+    for b_word in wl:
+        word = b_word.decode()
+        t_url = url.replace("FART", word) if do[0] else url
+        t_headers_raw = headers.replace("FART", word) if do[1] else headers
+        t_data_raw = data.replace("FART", word) if do[2] else data
+            
+        if t_headers_raw:
+            t_headers = parse_headers(t_headers_raw)
         else:
-            req = rq.post(t_url, headers=t_headers, data=t_data, timeout=10)
-    except rq.exceptions.RequestException as e:
-        print(f"request failed for word '{word}': {e}")
-        continue
-
-    code = req.status_code
-    if str(code) not in blacklist:
-        print(f"{code} : FART -> {word}")
+            t_headers = {}
+    
+        if t_data_raw:
+            t_data = {
+                key: values[0]
+                for key, values in parse_qs(t_data_raw).items()
+            }
+        else:
+            t_data = {}
+    
+        try:
+            if get:
+                req = rq.get(t_url, headers=t_headers, data=t_data, timeout=10)
+            else:
+                req = rq.post(t_url, headers=t_headers, data=t_data, timeout=10)
+        except rq.exceptions.RequestException as e:
+            print(f"request failed for word '{word}': {e}")
+            continue
+    
+        code = req.status_code
+        if str(code) not in blacklist:
+            print(f"{code} : FART -> {word}")
+            
+elif whitelist:
+    print(f"whitelisted status codes: {whitelist[::]}\n")
+    print("initalizing web fuzzer...")
+    for b_word in wl:
+        word = b_word.decode()
+        t_url = url.replace("FART", word) if do[0] else url
+        t_headers_raw = headers.replace("FART", word) if do[1] else headers
+        t_data_raw = data.replace("FART", word) if do[2] else data
+            
+        if t_headers_raw:
+            t_headers = parse_headers(t_headers_raw)
+        else:
+            t_headers = {}
+    
+        if t_data_raw:
+            t_data = {
+                key: values[0]
+                for key, values in parse_qs(t_data_raw).items()
+            }
+        else:
+            t_data = {}
+    
+        try:
+            if get:
+                req = rq.get(t_url, headers=t_headers, data=t_data, timeout=10)
+            else:
+                req = rq.post(t_url, headers=t_headers, data=t_data, timeout=10)
+        except rq.exceptions.RequestException as e:
+            print(f"request failed for word '{word}': {e}")
+            continue
+    
+        code = req.status_code
+        if str(code) in whitelist:
+            print(f"{code} : FART -> {word}")
