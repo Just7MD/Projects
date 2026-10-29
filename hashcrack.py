@@ -24,10 +24,9 @@ try:
             word.strip()
             print(f"trying: {word}", end="")
             if hl.new(format, word.encode()).hexdigest().strip() == hash:
-                print(f"\n\ncracked! {hash} is {word}")
+                print(f"\n\ncracked, {hash} is {word}")
                 exit()
         print("could not crack the hash")
 except FileNotFoundError:
     print("could not open the specified wordlist")
     exit()
-    
